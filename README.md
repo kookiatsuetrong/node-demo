@@ -1,0 +1,13 @@
+# Welcome
+## Hello h2
+### Welcome
+
+This project is a demonstration
+of JavaScript on server or Node.js
+
+```
+git clone https://github.com/kookiatsuetrong/node-demo
+cd node-demo
+npm install express ejs
+node app.js
+```
