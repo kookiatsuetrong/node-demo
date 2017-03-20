@@ -1,6 +1,7 @@
 var express = require('express')
 var app = express()
 var body = require('body-parser').urlencoded({extended: false})
+var cookie = require('cookie-parser')()
 app.listen(2000)
 var mysql = require('mysql');
 var db = {
@@ -18,6 +19,7 @@ app.get ('/register', showRegisterPage)
 app.post('/register', body, saveNewUser)
 app.get ('/login', showLogInPage)
 app.post('/login', body, checkPassword)
+app.get('/profile', cookie, showProfilePage)
 app.get('/status', showStatus)
 app.use( express.static('public') )
 app.use( showError )
@@ -84,4 +86,16 @@ function createCard() {
 		parseInt( Math.random() * 1000000 ) + '-' +
 		parseInt( Math.random() * 1000000 ) + '-' +
 		parseInt( Math.random() * 1000000 )
+}
+
+function showProfilePage(req, res) {
+	// 1. req.cookies.card
+	// 2. granted
+	console.log(req.cookies)
+	if (req.cookies && granted[req.cookies.card]) {
+		res.render('profile.html')
+	} else {
+		res.redirect('/login')
+	}
+
 }
