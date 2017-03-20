@@ -45,6 +45,11 @@ function showRegisterPage(req, res) {
 }
 
 function saveNewUser(req, res) {
-	console.log(req.body)
-	res.send('Done')
+	pool.query(`
+		insert into member(email, password, name)
+		values(?, sha2(?, 512), ?)
+	`, [req.body.email, req.body.password, req.body.fullname],
+	function (error, data) {
+		res.redirect('/login')
+	})
 }
