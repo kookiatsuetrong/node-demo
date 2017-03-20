@@ -70,7 +70,18 @@ function checkPassword(req, res) {
 		if (data.length == 0) {
 			res.redirect('/login?message=Incorrect Password')
 		} else {
-			res.send('Password is OK')
+			var card = createCard()
+			granted[card] = data[0]
+			res.set('Set-Cookie', "card=" + card)
+			res.redirect('/profile')
 		}
 	})
+}
+var granted = [ ]
+
+function createCard() {
+	return parseInt( Math.random() * 1000000 ) + '-' +
+		parseInt( Math.random() * 1000000 ) + '-' +
+		parseInt( Math.random() * 1000000 ) + '-' +
+		parseInt( Math.random() * 1000000 )
 }

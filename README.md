@@ -6,6 +6,6 @@ of JavaScript on server or Node.js
 ```
 git clone https://github.com/kookiatsuetrong/node-demo
 cd node-demo
-npm install express ejs mysql body-parser
+npm install express ejs mysql body-parser cookie-parser
 node app.js
 ```
