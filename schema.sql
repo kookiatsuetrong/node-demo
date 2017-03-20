@@ -20,6 +20,8 @@ create table post(
     owner   bigint
 );
 
+alter table post add photo varchar(200);
+
 insert into post(title, detail, owner)
 values('Books for sales', 
 'Please contact me directly 0812345678', 1);

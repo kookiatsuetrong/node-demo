@@ -28,6 +28,7 @@ app.get ('/new',      cookie, showNewPostPage)
 app.post('/new',      upload.single('photo'), cookie, saveNewPost)
 app.get ('/status',   showStatus)
 app.use( express.static('public') )
+app.use( express.static('uploads') )
 app.use( showError )
 
 function showStatus(req, res) {
@@ -115,17 +116,31 @@ function showNewPostPage(req, res) {
 		res.redirect('/login')
 	}
 }
+var fs = require('fs')
 
 function saveNewPost(req, res) {
 	if (req.cookies && granted[req.cookies.card]) {
 		var user = granted[req.cookies.card]
-		pool.query(`
-			insert into post(title, detail, owner)
-			values(?,?,?)
-		`, [req.body.title, req.body.detail, user.id],
-		function (error, data) {
-			res.redirect('/profile')
-		})
+		if (req.file) {
+			fs.rename(req.file.path, req.file.path + '.jpg', (error, data) => {		
+				pool.query(`
+					insert into post(title, detail, owner, photo)
+					values(?,?,?, ?)
+				`, [req.body.title, req.body.detail, user.id, 
+					req.file.filename + '.jpg'],
+				function (error, data) {
+					res.redirect('/profile')
+				})
+			})			
+		} else {
+			pool.query(`
+				insert into post(title, detail, owner)
+				values(?,?,?)
+			`, [req.body.title, req.body.detail, user.id],
+			function (error, data) {
+				res.redirect('/profile')
+			})
+		}
 	} else {
 		res.redirect('/login')
 	}
