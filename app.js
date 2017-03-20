@@ -14,16 +14,17 @@ var db = {
 var pool = mysql.createPool(db)
 
 app.engine('html', require('ejs').renderFile)
-app.get('/', showHome)
-app.get('/list', showList);
+app.get ('/',         showHome)
+app.get ('/list',     showList);
 app.get ('/register', showRegisterPage)
 app.post('/register', body, saveNewUser)
-app.get ('/login', showLogInPage)
-app.post('/login', body, checkPassword)
-app.get('/profile', cookie, showProfilePage)
-app.get('/logout', cookie, showLogOutPage)
-app.get('/new', cookie, showNewPostPage)
-app.get('/status', showStatus)
+app.get ('/login',    showLogInPage)
+app.post('/login',    body, checkPassword)
+app.get ('/profile',  cookie, showProfilePage)
+app.get ('/logout',   cookie, showLogOutPage)
+app.get ('/new',      cookie, showNewPostPage)
+app.post('/new',      body, cookie, saveNewPost)
+app.get ('/status',   showStatus)
 app.use( express.static('public') )
 app.use( showError )
 
@@ -108,6 +109,21 @@ function showLogOutPage(req, res) {
 function showNewPostPage(req, res) {
 	if (req.cookies && granted[req.cookies.card]) {
 		res.render('new.html')
+	} else {
+		res.redirect('/login')
+	}
+}
+
+function saveNewPost(req, res) {
+	if (req.cookies && granted[req.cookies.card]) {
+		var user = granted[req.cookies.card]
+		pool.query(`
+			insert into post(title, detail, owner)
+			values(?,?,?)
+		`, [req.body.title, req.body.detail, user.id],
+		function (error, data) {
+			res.redirect('/profile')
+		})
 	} else {
 		res.redirect('/login')
 	}
