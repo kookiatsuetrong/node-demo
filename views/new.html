@@ -5,7 +5,7 @@
     }
 </style>
 <div class='container'>
-    <form method='post'>
+    <form method='post' enctype="multipart/form-data">
         <input name='title'
             class='form-control'
             placeholder='Title'
@@ -13,6 +13,8 @@
         <textarea name='detail'
             class='form-control'
             placeholder='Detail'></textarea>
+        <input type='file' name='photo'>
+        <br>
         <button class='btn btn-primary'>Post</button>
 
     </form>
