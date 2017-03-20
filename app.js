@@ -2,6 +2,7 @@ var express = require('express')
 var app = express()
 var body = require('body-parser').urlencoded({extended: false})
 var cookie = require('cookie-parser')()
+var granted = [ ]
 app.listen(2000)
 var mysql = require('mysql');
 var db = {
@@ -20,6 +21,7 @@ app.post('/register', body, saveNewUser)
 app.get ('/login', showLogInPage)
 app.post('/login', body, checkPassword)
 app.get('/profile', cookie, showProfilePage)
+app.get('/logout', cookie, showLogOutPage)
 app.get('/status', showStatus)
 app.use( express.static('public') )
 app.use( showError )
@@ -79,7 +81,6 @@ function checkPassword(req, res) {
 		}
 	})
 }
-var granted = [ ]
 
 function createCard() {
 	return parseInt( Math.random() * 1000000 ) + '-' +
@@ -91,11 +92,16 @@ function createCard() {
 function showProfilePage(req, res) {
 	// 1. req.cookies.card
 	// 2. granted
-	console.log(req.cookies)
 	if (req.cookies && granted[req.cookies.card]) {
 		res.render('profile.html')
 	} else {
 		res.redirect('/login')
 	}
+}
 
+function showLogOutPage(req, res) {
+	if (req.cookies) {
+		delete granted[req.cookies.card]
+	}
+	res.render('logout.html')
 }
