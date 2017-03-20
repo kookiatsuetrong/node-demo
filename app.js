@@ -22,6 +22,7 @@ app.get ('/login', showLogInPage)
 app.post('/login', body, checkPassword)
 app.get('/profile', cookie, showProfilePage)
 app.get('/logout', cookie, showLogOutPage)
+app.get('/new', cookie, showNewPostPage)
 app.get('/status', showStatus)
 app.use( express.static('public') )
 app.use( showError )
@@ -102,4 +103,12 @@ function showLogOutPage(req, res) {
 		delete granted[req.cookies.card]
 	}
 	res.render('logout.html')
+}
+
+function showNewPostPage(req, res) {
+	if (req.cookies && granted[req.cookies.card]) {
+		res.render('new.html')
+	} else {
+		res.redirect('/login')
+	}
 }
