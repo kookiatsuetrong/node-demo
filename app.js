@@ -90,10 +90,8 @@ function createCard() {
 }
 
 function showProfilePage(req, res) {
-	// 1. req.cookies.card
-	// 2. granted
 	if (req.cookies && granted[req.cookies.card]) {
-		res.render('profile.html')
+		res.render('profile.html', { user: granted[req.cookies.card] })
 	} else {
 		res.redirect('/login')
 	}
