@@ -17,6 +17,7 @@ app.get('/list', showList);
 app.get ('/register', showRegisterPage)
 app.post('/register', body, saveNewUser)
 app.get ('/login', showLogInPage)
+app.post('/login', body, checkPassword)
 app.get('/status', showStatus)
 app.use( express.static('public') )
 app.use( showError )
@@ -57,4 +58,19 @@ function saveNewUser(req, res) {
 
 function showLogInPage(req, res) {
 	res.render('login.html')
+}
+
+function checkPassword(req, res) {
+	pool.query(`
+		select * from member
+		where email = ? and
+		password = sha2(?, 512)
+	`, [req.body.email, req.body.password],
+	function (error, data) {
+		if (data.length == 0) {
+			res.redirect('/login?message=Incorrect Password')
+		} else {
+			res.send('Password is OK')
+		}
+	})
 }
